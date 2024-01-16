@@ -167,5 +167,68 @@ position_quality_summary <- avalanche %>%
   group_by(position_type, zodiac_quality) %>% 
   summarise(count = n())
 
-## -- create visualizations -- ##
 
+## -- create visualizations -- ##
+{# create color palette
+# element_palette <- tibble(element = c("Air", "Earth", "Fire", "Water"),
+#                           color = c("goldenrod", "green4", "firebrick", "blue4"))
+}
+
+# visualize the position_element summary table, facet wrap by position
+ggplot(avalanche, aes(x = zodiac_element, fill = zodiac_element)) +
+  geom_bar() +
+  scale_fill_manual(values = c("Air" = "gold2", "Earth" = "olivedrab",
+                              "Fire" = "tomato3", "Water" = "steelblue4")) +
+  facet_wrap(~position_type) +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0, 200)) +
+  #theme_grey(base_family = "Roboto Condensed") +
+  labs(
+    #title = "Which Zodiac Elements Occur in Certain NHL Positions?",
+    title = "Which Zodiac Elements Occur Most Frequently in Hockey Positions 
+on the Colorado Avalanche?",
+    subtitle = "The data below shows the cumulative number of players on the Colorado Avalanche’s roster through time. 
+They were divvied up according to their zodiac sign’s element, and their position on the team. Air signs
+include Gemini, Libra, and Aquarius. Earth signs include Taurus, Virgo, and Capricorns. Fire signs include
+Aries, Leo, and Sagittarius. And finally, Water signs include Cancer, Scorpio, and Pisces. \n",
+    y = "No. of Players\n",
+    x = "\nZodiac Elements",
+    caption = "Tidy Tuesday: Week 2, 2024
+    Daphne Virlar-Knight | Data: NHL API"
+  ) +
+  theme(legend.position = "none",
+      text = element_text(family = "Roboto Condensed"), # had to download this font for it to work
+      plot.title = element_text(family = "Noto Sans",
+                                face = "bold",
+                                size = 14),
+      # plot.subtitle = element_text(family = "Roboto Condensed"),
+      # plot.caption = element_text(family = "Roboto Condensed"),
+      plot.background = element_rect(fill = "grey99"))#,
+      #panel.border = element_rect(linetype = 1, fill = NA))#,
+      #strip.background = element_rect(colour = "black")) 
+
+{
+# ggplot(position_element_summary, aes(x = position_element_summary$zodiac_element, 
+#                                      y = position_element_summary$count)) +
+#   geom_bar(stat = "identity",
+#            fill = c("Air" = "goldenrod", "Earth" = "green4",
+#                     "Fire" = "firebrick", "Water" = "blue4")) 
+  # scale_fill_manual("Lenged",values = c("Air" = "goldenrod", "Earth" = "green4",
+  #                              "Fire" = "firebrick", "Water" = "blue4")) 
+  #scale_fill_manual(values = element_palette$color) +
+  #scale_fill_manual(values = c("goldenrod", "green4", "firebrick", "blue4")) +
+  #geom_bar(aes(fill = c("goldenrod", "green4", "firebrick", "blue4"))) +
+  # facet_wrap(~position_type) +
+  # scale_y_continuous(expand = c(0,0),
+  #                    limits = c(0, 200)) 
+  } 
+
+# ggsave(filename = "hockey-zodiac-plot.png", 
+#        plot = hockey_zodiac,
+#        width = 5, height = 5)
+  ## ggsave() keeps running into a fatal error and aborting... just going to
+  ## figure out a different way to save my graph
+
+# 688 x 402
+
+ggsave("hockey-zodiac-plot2.png", width = 8, height = 8, unit = "cm", dpi = 300)
