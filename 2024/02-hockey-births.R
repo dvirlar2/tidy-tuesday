@@ -6,39 +6,15 @@ library(tidyverse) # for data wrangling + plotting
 library(tidytuesdayR) # for the data
 
 
-## -- load data -- ##
+## -- load full data -- ##
 tuesdata <- tidytuesdayR::tt_load(2024, week = 2)
 
 
-## -- clean data -- ##
+## -- load split data -- ##
 canada_births_1991_2022 <- tuesdata$canada_births_1991_2022
 nhl_player_births <- tuesdata$nhl_player_births
 nhl_rosters <- tuesdata$nhl_rosters
 nhl_teams <- tuesdata$nhl_teams
-
-
-## -- explore data -- ##
-# canada_births_1991_1999 <- canada_births_1991_2022 %>%
-#   filter(year <= 1999)
-# 
-# ggplot(canada_births_1991_1999, aes(x = month, y = births)) +
-#   geom_col() +
-#   facet_wrap(~ year)
-
-
-## -- idea generation -- ##
-# graph births per month over time for colorado rockies (CLR), avalanche (COL), or 
-# the Seattle Krakens (SEA). 
-
-# could also summarize number of births into seasons
-
-# it might be interesting to see what the total number of births per season 
-# across time (so sum all Januaries together, all Febs, etc.), and see how many
-# of what birth month tend to go to what positions
-
-# OH! EVEN BETTER! Break it up into astrological signs! Do certain signs tend to be more 
-# aggressive or defensive in nature?? 
-  # maybe use the team's color palette (get color palette from jerseys/logos) for plotting
 
 
 ## -- data wrangling -- ## 
@@ -46,8 +22,8 @@ nhl_teams <- tuesdata$nhl_teams
 # create function for calculating zodiac signs
 
 #Note: 
-# the following code is a slightly modified version of the source code from the 
-# "DescTools" pckg and it's Zodiac function. I modified it because I didn't want to install the whole pckg
+# the following function is a slightly modified version of the source code from the 
+# "DescTools" pckg and its Zodiac function. I modified it because I didn't want to install the whole pckg
   # Pckg url: https://andrisignorell.github.io/DescTools/index.html
   # Original code: https://github.com/AndriSignorell/DescTools/blob/master/R/DescTools.r#L3527-L3547
   # Citation: Signorell A (2023). DescTools: Tools for Descriptive Statistics. R package version 0.99.51, https://github.com/AndriSignorell/DescTools/, https://andrisignorell.github.io/DescTools/.
@@ -78,43 +54,8 @@ astro_extras <-  data.frame("sign" = c("Aries", "Taurus", "Gemini", "Cancer",
                                          
                             "qualities" = rep(c("Cardinal", "Fixed", "Mutable"), 4))
 
-{
-# create data frame for astrological signs
-astro_signs <- data.frame("Sign" = c("Aries", "Taurus", "Gemini", "Cancer",
-                                     "Leo", "Virgo", "Libra", "Scorpio", 
-                                     "Sagittarius", "Capricorn", "Aquarius", "Pisces"),
-                          
-                          "Element" = rep(c("Fire", "Earth", "Air", "Water"), 3),
-                          
-                          "Qualities" = rep(c("Cardinal", "Fixed", "Mutable"), 4),
-                          # 
-                          # "Beginning_Date" = c("March 21", "April 20", "May 21", "June 22",
-                          #                      "July 23", "August 23", "September 23", "October 24",
-                          #                      "November 22", "December 22", "January 20", "February 19"),
-                          # 
-                          # "End_Date" = c("April 19", "May 20", "June 21", "July 22",
-                          #                "August 22", "September 22", "October 23", "November 21",
-                          #                "December 21", "January 19", "February 18", "March 20")
-                          )
 
-
-# zodiac_signs <- astro_signs %>% 
-#   mutate(Beginning_Date = lubridate::parse_date_time(astro_signs$Beginning_Date, "md")) %>% 
-#   mutate(End_Date = lubridate::parse_date_time(astro_signs$End_Date, "md"))
-# 
-# 
-# zodiac_dates <- zodiac_signs %>% 
-#   mutate(zb_year = as_date(1900)) %>% 
-#   mutate(zb_month = month(Beginning_Date)) %>% 
-#   mutate(zb_day = day(Beginning_Date)) %>% 
-#   mutate(ze_month = month(End_Date)) %>% 
-#   mutate(ze_day = day(End_Date))
-#   
-}
-
-
-## -- create Avalanche Roster data frmae -- ##
-
+## -- create Avalanche Roster data frame -- ##
 # subset avalanche from overall NHL roster
 # calculate zodiac sign based on birth date
 # add an element and quality column according to zodiac
@@ -169,11 +110,6 @@ position_quality_summary <- avalanche %>%
 
 
 ## -- create visualizations -- ##
-{# create color palette
-# element_palette <- tibble(element = c("Air", "Earth", "Fire", "Water"),
-#                           color = c("goldenrod", "green4", "firebrick", "blue4"))
-}
-
 # visualize the position_element summary table, facet wrap by position
 ggplot(avalanche, aes(x = zodiac_element, fill = zodiac_element)) +
   geom_bar() +
@@ -182,9 +118,7 @@ ggplot(avalanche, aes(x = zodiac_element, fill = zodiac_element)) +
   facet_wrap(~position_type) +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 200)) +
-  #theme_grey(base_family = "Roboto Condensed") +
   labs(
-    #title = "Which Zodiac Elements Occur in Certain NHL Positions?",
     title = "Which Zodiac Elements Occur Most Frequently in Hockey Positions 
 on the Colorado Avalanche?",
     subtitle = "The data below shows the cumulative number of players on the Colorado Avalanche’s roster through time. 
@@ -201,36 +135,4 @@ Aries, Leo, and Sagittarius. And finally, Water signs include Cancer, Scorpio, a
       plot.title = element_text(family = "Noto Sans",
                                 face = "bold",
                                 size = 14),
-      # plot.subtitle = element_text(family = "Roboto Condensed"),
-      # plot.caption = element_text(family = "Roboto Condensed"),
-      plot.background = element_rect(fill = "grey99"))#,
-      #panel.border = element_rect(linetype = 1, fill = NA))#,
-      #strip.background = element_rect(colour = "black")) 
-
-{
-# ggplot(position_element_summary, aes(x = position_element_summary$zodiac_element, 
-#                                      y = position_element_summary$count)) +
-#   geom_bar(stat = "identity",
-#            fill = c("Air" = "goldenrod", "Earth" = "green4",
-#                     "Fire" = "firebrick", "Water" = "blue4")) 
-  # scale_fill_manual("Lenged",values = c("Air" = "goldenrod", "Earth" = "green4",
-  #                              "Fire" = "firebrick", "Water" = "blue4")) 
-  #scale_fill_manual(values = element_palette$color) +
-  #scale_fill_manual(values = c("goldenrod", "green4", "firebrick", "blue4")) +
-  #geom_bar(aes(fill = c("goldenrod", "green4", "firebrick", "blue4"))) +
-  # facet_wrap(~position_type) +
-  # scale_y_continuous(expand = c(0,0),
-  #                    limits = c(0, 200)) 
-  } 
-
-# ggsave(filename = "hockey-zodiac-plot.png", 
-#        plot = hockey_zodiac,
-#        width = 5, height = 5)
-  ## ggsave() keeps running into a fatal error and aborting... just going to
-  ## figure out a different way to save my graph
-
-# 688 x 402
-
-#ggplot2::ggsave("testplot.png", width = 8, height = 8, unit = "cm", dpi = 300)
-
-#ggsave("~/tst.png",height=9,width=12,dpi=72)
+      plot.background = element_rect(fill = "grey99"))
