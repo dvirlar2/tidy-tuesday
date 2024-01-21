@@ -231,4 +231,6 @@ Aries, Leo, and Sagittarius. And finally, Water signs include Cancer, Scorpio, a
 
 # 688 x 402
 
-ggsave("hockey-zodiac-plot2.png", width = 8, height = 8, unit = "cm", dpi = 300)
+#ggplot2::ggsave("testplot.png", width = 8, height = 8, unit = "cm", dpi = 300)
+
+#ggsave("~/tst.png",height=9,width=12,dpi=72)
